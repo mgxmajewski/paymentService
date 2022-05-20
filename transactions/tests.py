@@ -15,3 +15,4 @@ class ReportTests(APITestCase):
         url = reverse('serverCheck')
         response = self.client.get(url, format='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['message'], 'Server is ready for work')
