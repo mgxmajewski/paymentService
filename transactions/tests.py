@@ -8,7 +8,7 @@ from rest_framework.test import APITestCase, URLPatternsTestCase
 
 
 class ReportTests(APITestCase):
-    def test_create_account(self):
+    def test_server_check(self):
         """
         Ensure we can create a new account object.
         """
