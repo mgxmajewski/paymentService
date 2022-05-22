@@ -24,18 +24,24 @@ def map_direct_fields(data_to_map, data_receiver):
 
 
 def pay_by_link_payment_info(data):
-    return PaymentInfo('pay_by_link')
+    new_payment_info = PaymentInfo()
+    new_payment_info.type = 'pay_by_link'
+    new_payment_info.payment_mean = data['bank']
+    return new_payment_info
 
 
 def dp_payment_info(data):
     new_payment_info = PaymentInfo()
     map_direct_fields(data, new_payment_info)
     new_payment_info.type = 'dp'
+    new_payment_info.payment_mean = data['iban']
     return new_payment_info
 
 
 def card_payment_info(data):
-    return PaymentInfo('card')
+    new_payment_info = PaymentInfo()
+    new_payment_info.type = 'card'
+    return new_payment_info
 
 
 def create_payment_info(processing_strategy_fn, data):
