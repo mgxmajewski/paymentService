@@ -2,15 +2,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-import json
 
-
-def validate_json(json_data):
-    try:
-        json.loads(json_data)
-    except ValueError as err:
-        return False
-    return True
 
 # Create your tests here.
 
