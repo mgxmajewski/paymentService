@@ -18,12 +18,12 @@ def pay_by_link_payment_info(data: TransactionToProcess):
 
 def dp_payment_info(data: TransactionToProcess):
     print(data)
-    return
+    return PaymentInfo('dp')
 
 
 def card_payment_info(data: TransactionToProcess):
     print(data)
-    return
+    return PaymentInfo('card')
 
 
 def create_payment_info(processing_strategy_fn, data: TransactionToProcess):
