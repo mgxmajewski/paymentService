@@ -63,10 +63,25 @@ class TestTransactionsServices:
 
         # given
         processing_strategy = dp_payment_info
-        data = {"currency": "USD", "description": "FastFood"}
+        data = {"currency": "USD"}
 
         # when
         result = self.process_transaction(processing_strategy, data).currency
 
         # then
         assert_that(result).is_equal_to("USD")
+
+    def test_process_transaction_description(self):
+        """
+        Ensure transaction type after processing matches the chosen strategy
+        """
+
+        # given
+        processing_strategy = dp_payment_info
+        data = {"description": "FastFood"}
+
+        # when
+        result = self.process_transaction(processing_strategy, data).description
+
+        # then
+        assert_that(result).is_equal_to("FastFood")
