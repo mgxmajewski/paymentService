@@ -10,13 +10,12 @@ class PaymentInfo:
 
 
 # list of the fields with direct mapping (one to one no name changing)
-DIRECTLY_MAPPING_FIELDS = ['amount', 'currency']
+DIRECTLY_MAPPING_FIELDS = ['amount', 'currency', 'description']
 
 
 def map_direct_fields(data_to_map, data_receiver):
     for field_to_update in DIRECTLY_MAPPING_FIELDS:
         if field_to_update not in data_to_map:
-            # TODO
             # good place to collect info on how data mapping went
             continue
         new_val = data_to_map[field_to_update]
