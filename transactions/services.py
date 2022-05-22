@@ -7,6 +7,7 @@ class PaymentInfo:
     amount: int = 0
     description = 'unprocessed'
     currency = 'unprocessed'
+    payment_mean = 'unprocessed'
 
 
 # list of the fields with direct mapping (one to one no name changing)

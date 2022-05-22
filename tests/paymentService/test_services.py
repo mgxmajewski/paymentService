@@ -41,6 +41,30 @@ class TestTransactionsServices:
         # then
         assert_that(result).is_equal_to(expected)
 
+    # case1
+    processing_strategy_1 = pay_by_link_payment_info
+    data_1 = {'bank': 'mbank'}
+    expected_1 = 'mbank'
+    case_1 = processing_strategy_1, data_1, expected_1
+
+    # case2
+    processing_strategy_2 = dp_payment_info
+    data_2 = {'iban': 'DE91100000000123456789'}
+    expected_2 = 'DE91100000000123456789'
+    case_2 = processing_strategy_2, data_2, expected_2
+
+    @pytest.mark.parametrize("processing_strategy, data, expected", [case_1, case_2])
+    def test_process_transaction_payment_mean(self, processing_strategy, data, expected):
+        """
+        Ensure transaction type after processing matches the chosen strategy
+        """
+
+        # when
+        result = self.process_transaction(processing_strategy, data).payment_mean
+
+        # then
+        assert_that(result).is_equal_to(expected)
+
     def test_process_transaction_amount(self):
         """
         Ensure transaction type after processing matches the chosen strategy
