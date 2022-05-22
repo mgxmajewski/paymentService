@@ -1,26 +1,24 @@
-from abc import ABC
-from dataclasses import dataclass, field
-
-
-# class TransactionToProcess(ABC):
-#     pass
+from dataclasses import dataclass
 
 
 @dataclass
 class PaymentInfo:
     type: str = 'unprocessed'
     amount: int = 0
+    description = 'unprocessed'
+    currency = 'unprocessed'
 
 
 # list of the fields with direct mapping (one to one no name changing)
-DIRECTLY_MAPPING_FIELDS = ['amount']
+DIRECTLY_MAPPING_FIELDS = ['amount', 'currency']
 
 
 def map_direct_fields(data_to_map, data_receiver):
-    is_dict_empty = not bool(data_to_map)
-    if is_dict_empty:
-        return
     for field_to_update in DIRECTLY_MAPPING_FIELDS:
+        if field_to_update not in data_to_map:
+            # TODO
+            # good place to collect info on how data mapping went
+            continue
         new_val = data_to_map[field_to_update]
         setattr(data_receiver, field_to_update, new_val)
 
