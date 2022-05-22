@@ -40,3 +40,18 @@ class TestTransactionsServices:
 
         # then
         assert_that(result).is_equal_to(expected)
+
+    def test_process_transaction_amount(self):
+        """
+        Ensure transaction type after processing matches the chosen strategy
+        """
+
+        # given
+        processing_strategy = 'dp'
+        data = {"amount": 100}
+
+        # when
+        result = self.process_transaction(processing_strategy, data).amount
+
+        # then
+        assert_that(result).is_equal_to(100)
