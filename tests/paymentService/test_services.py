@@ -47,7 +47,7 @@ class TestTransactionsServices:
         """
 
         # given
-        processing_strategy = 'dp'
+        processing_strategy = dp_payment_info
         data = {"amount": 100}
 
         # when
