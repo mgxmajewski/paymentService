@@ -17,7 +17,7 @@ DIRECTLY_MAPPING_FIELDS = ['amount', 'currency', 'description']
 def map_direct_fields(data_to_map, data_receiver):
     for field_to_update in DIRECTLY_MAPPING_FIELDS:
         if field_to_update not in data_to_map:
-            # good place to collect info on how data mapping went
+            # good place to collect information if request data was complete
             continue
         new_val = data_to_map[field_to_update]
         setattr(data_receiver, field_to_update, new_val)
@@ -26,7 +26,11 @@ def map_direct_fields(data_to_map, data_receiver):
 def pay_by_link_payment_info(data):
     new_payment_info = PaymentInfo()
     new_payment_info.type = 'pay_by_link'
-    new_payment_info.payment_mean = data['bank']
+    if 'bank' in data:
+        new_payment_info.payment_mean = data['bank']
+    else:
+        # good place to collect information if request data was complete
+        pass
     return new_payment_info
 
 
@@ -34,7 +38,11 @@ def dp_payment_info(data):
     new_payment_info = PaymentInfo()
     map_direct_fields(data, new_payment_info)
     new_payment_info.type = 'dp'
-    new_payment_info.payment_mean = data['iban']
+    if 'iban' in data:
+        new_payment_info.payment_mean = data['iban']
+    else:
+        # good place to collect information if request data was complete
+        pass
     return new_payment_info
 
 
