@@ -55,3 +55,12 @@ def card_payment_info(data):
 def create_payment_info(processing_strategy_fn, data):
     payment_info = processing_strategy_fn(data)
     return payment_info
+
+
+def iso8601_date_parser(date):
+    print(date)
+    return
+
+# base fetch url
+# http://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
+# ask is the value to use for calculation ("selling price")
