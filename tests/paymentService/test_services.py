@@ -163,13 +163,31 @@ class TestTransactionsServices:
     def prepare_get_valid_utc_string(self):
         self.get_valid_utc_string = get_valid_utc_string
 
-    def test_get_valid_utc_string(self):
-        # given
-        date_string = '2021-05-13T01:01:43-08:00'
+    # case1
+    date_string_1 = '2021-05-13T01:01:43-08:00'
+    expected_1 = '2021-05-13T09:01:43Z'
+    case_1 = date_string_1, expected_1
+
+    # case2
+    date_string_2 = '2021-05-14T08:27:09Z'
+    expected_2 = '2021-05-14T08:27:09Z'
+    case_2 = date_string_2, expected_2
+
+    # case3
+    date_string_3 = '2021-05-13T09:00:05+02:00'
+    expected_3 = '2021-05-13T07:00:05Z'
+    case_3 = date_string_3, expected_3
+
+    # case4
+    date_string_4 = '2021-05-14T18:32:26Z'
+    expected_4 = '2021-05-14T18:32:26Z'
+    case_4 = date_string_4, expected_4
+
+    @pytest.mark.parametrize("date_string, expected", [case_1, case_2, case_3, case_4])
+    def test_get_valid_utc_string(self, date_string, expected):
 
         # when
         result = get_valid_utc_string(date_string)
 
         # then
-        expected = '2021-05-13T09:01:43Z'
         assert_that(result).is_equal_to(expected)
