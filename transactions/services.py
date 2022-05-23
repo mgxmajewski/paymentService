@@ -81,7 +81,12 @@ def get_valid_utc_iso8061_date(date_str):
 
 
 def mask_card_nr(card_nr_str):
-    return
+    first_four = card_nr_str[:4]
+    last_four = card_nr_str[-4:]
+    mask_width = len(card_nr_str) - len(first_four) - len(last_four)
+    masked_digits = '*' * mask_width
+    masked_number = f'{first_four}{masked_digits}{last_four}'
+    return masked_number
 
 # base fetch url
 # http://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
