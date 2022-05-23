@@ -79,6 +79,10 @@ def get_valid_utc_iso8061_date(date_str):
     converted_to_utc_date = convert_date_to_utc(validated_date)
     return converted_to_utc_date
 
+
+def mask_card_nr(card_nr_str):
+    return
+
 # base fetch url
 # http://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
 # ask is the value to use for calculation ("selling price")

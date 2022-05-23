@@ -185,9 +185,23 @@ class TestTransactionsServices:
 
     @pytest.mark.parametrize("date_string, expected", [case_1, case_2, case_3, case_4])
     def test_get_valid_utc_string(self, date_string, expected):
-
         # when
         result = get_valid_utc_iso8061_date(date_string)
 
         # then
+        assert_that(result).is_equal_to(expected)
+
+    @pytest.fixture(autouse=True)
+    def prepare_mask_card_nr(self):
+        self.mask_card_nr = mask_card_nr
+
+    def test_mask_card_nr(self, date_string, expected):
+        # given
+        card_nr_str = '2222222222222222'
+
+        # when
+        result = mask_card_nr(card_nr_str)
+
+        # then
+        expected = '2222********2222'
         assert_that(result).is_equal_to(expected)
