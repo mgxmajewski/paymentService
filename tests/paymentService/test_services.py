@@ -1,12 +1,11 @@
-from datetime import datetime, timezone, date
-import iso8601
+from datetime import datetime, timezone, date, timedelta
 
 import pytest
 from assertpy import assert_that
 
 
 from transactions.services import PaymentInfo, create_payment_info, pay_by_link_payment_info, dp_payment_info, \
-    card_payment_info, iso8601_date_parser
+    card_payment_info, iso8601_date_parser, convert_time_to_utc
 
 
 @pytest.mark.django_db
@@ -116,7 +115,7 @@ class TestTransactionsServices:
         assert_that(result).is_equal_to("FastFood")
 
     @pytest.fixture(autouse=True)
-    def prepare_get_payment_info(self):
+    def prepare_iso8601_date_parser(self):
         self.iso8601_date_parser = iso8601_date_parser
 
     def test_date_parser(self):
@@ -127,6 +126,21 @@ class TestTransactionsServices:
         expected = datetime(2007, 1, 25, 12, 0, tzinfo=timezone.utc)
         print(f'expected: {expected}')
         result = iso8601_date_parser(date_input)
+
+        # then
+        assert_that(result).is_equal_to(expected)
+
+    @pytest.fixture(autouse=True)
+    def prepare_get_payment_info(self):
+        self.convert_time_to_utc = convert_time_to_utc
+
+    def test_convert_time_to_utc(self):
+        # given
+        date_input = datetime(2021, 5, 13, 1, 1, 43, tzinfo=timezone.utc) + timedelta(hours=-8)
+
+        # when '2021-05-13T09:01:43Z
+        expected = datetime(2021, 5, 13, 9, 1, 43, tzinfo=timezone.utc)
+        result = convert_time_to_utc(date_input)
 
         # then
         assert_that(result).is_equal_to(expected)

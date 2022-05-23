@@ -62,6 +62,10 @@ def iso8601_date_parser(date_str):
     date_from_str = iso8601.parse_date(date_str)
     return date_from_str
 
+
+def convert_time_to_utc(date_instance):
+    return
+
 # base fetch url
 # http://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
 # ask is the value to use for calculation ("selling price")
