@@ -3,8 +3,8 @@ from datetime import datetime, timezone, date, timedelta
 import pytest
 from assertpy import assert_that
 
-from transactions.services import PaymentInfo, create_payment_info, pay_by_link_payment_info, dp_payment_info, \
-    card_payment_info, iso8601_date_parser, convert_time_to_utc, get_date_normalized_str
+from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
+    card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str
 
 
 @pytest.mark.django_db
@@ -12,7 +12,7 @@ class TestTransactionsServices:
 
     @pytest.fixture(autouse=True)
     def prepare_get_payment_info(self):
-        self.process_transaction = create_payment_info
+        self.create_payment_info = create_payment_info
 
     # case1
     processing_strategy_1 = pay_by_link_payment_info
@@ -39,7 +39,7 @@ class TestTransactionsServices:
         data = {}
 
         # when
-        result = self.process_transaction(processing_strategy, data).type
+        result = self.create_payment_info(processing_strategy, data).type
 
         # then
         assert_that(result).is_equal_to(expected)
@@ -63,7 +63,7 @@ class TestTransactionsServices:
         """
 
         # when
-        result = self.process_transaction(processing_strategy, data).payment_mean
+        result = self.create_payment_info(processing_strategy, data).payment_mean
 
         # then
         assert_that(result).is_equal_to(expected)
@@ -78,7 +78,7 @@ class TestTransactionsServices:
         data = {"amount": 100}
 
         # when
-        result = self.process_transaction(processing_strategy, data).amount
+        result = self.create_payment_info(processing_strategy, data).amount
 
         # then
         assert_that(result).is_equal_to(100)
@@ -93,7 +93,7 @@ class TestTransactionsServices:
         data = {"currency": "USD"}
 
         # when
-        result = self.process_transaction(processing_strategy, data).currency
+        result = self.create_payment_info(processing_strategy, data).currency
 
         # then
         assert_that(result).is_equal_to("USD")
@@ -108,7 +108,7 @@ class TestTransactionsServices:
         data = {"description": "FastFood"}
 
         # when
-        result = self.process_transaction(processing_strategy, data).description
+        result = self.create_payment_info(processing_strategy, data).description
 
         # then
         assert_that(result).is_equal_to("FastFood")
@@ -130,8 +130,8 @@ class TestTransactionsServices:
         assert_that(result).is_equal_to(expected)
 
     @pytest.fixture(autouse=True)
-    def prepare_get_payment_info(self):
-        self.convert_time_to_utc = convert_time_to_utc
+    def prepare_convert_time_to_utc(self):
+        self.convert_time_to_utc = convert_date_to_utc
 
     def test_convert_time_to_utc(self):
         # given
@@ -139,7 +139,7 @@ class TestTransactionsServices:
 
         # when '2021-05-13T09:01:43Z
         expected = datetime(2021, 5, 13, 9, 1, 43, tzinfo=timezone.utc)
-        result = convert_time_to_utc(date_input)
+        result = convert_date_to_utc(date_input)
 
         # then
         assert_that(result).is_equal_to(expected)
