@@ -56,8 +56,14 @@ class TestTransactionsServices:
     data_2 = {'iban': 'DE91100000000123456789'}
     expected_2 = 'DE91100000000123456789'
     case_2 = processing_strategy_2, data_2, expected_2
+    
+    # case3
+    processing_strategy_3 = dp_payment_info
+    data_3 = {'cardholder_name': 'John', 'cardholder_surname': 'Doe', 'card_number': '1234222222226789'}
+    expected_3 = 'John Doe 1234********6789'
+    case_3 = processing_strategy_3, data_3, expected_3
 
-    @pytest.mark.parametrize("processing_strategy, data, expected", [case_1, case_2])
+    @pytest.mark.parametrize("processing_strategy, data, expected", [case_1, case_2, case_3])
     def test_process_transaction_payment_mean(self, processing_strategy, data, expected):
         """
         Ensure transaction type after processing matches the chosen strategy

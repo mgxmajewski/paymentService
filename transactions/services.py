@@ -5,6 +5,7 @@ import pytz
 
 @dataclass
 class PaymentInfo:
+    date: str = 'unprocessed'
     type: str = 'unprocessed'
     amount: int = 0
     description = 'unprocessed'
