@@ -74,8 +74,11 @@ def get_date_normalized_str(date_instance):
     return date_instance.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
-def get_valid_utc_string(date_instance):
-    return
+def get_valid_utc_string(date_str):
+    validate_date = iso8601_date_parser(date_str)
+    translate_date_to_utc = convert_date_to_utc(validate_date)
+    normalize_date_string = get_date_normalized_str(translate_date_to_utc)
+    return normalize_date_string
 
 # base fetch url
 # http://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
