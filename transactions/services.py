@@ -73,6 +73,10 @@ def convert_date_to_utc(date_instance):
 def get_date_normalized_str(date_instance):
     return date_instance.strftime('%Y-%m-%dT%H:%M:%SZ')
 
+
+def get_valid_utc_string(date_instance):
+    return
+
 # base fetch url
 # http://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
 # ask is the value to use for calculation ("selling price")

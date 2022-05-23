@@ -4,7 +4,7 @@ import pytest
 from assertpy import assert_that
 
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
-    card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str
+    card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_string
 
 
 @pytest.mark.django_db
@@ -157,4 +157,19 @@ class TestTransactionsServices:
 
         # then
         expected = '2007-01-25T12:00:00Z'
+        assert_that(result).is_equal_to(expected)
+
+    @pytest.fixture(autouse=True)
+    def prepare_get_valid_utc_string(self):
+        self.get_valid_utc_string = get_valid_utc_string
+
+    def test_get_valid_utc_string(self):
+        # given
+        date_string = '2021-05-13T01:01:43-08:00'
+
+        # when
+        result = get_valid_utc_string(date_string)
+
+        # then
+        expected = '2021-05-13T09:01:43Z'
         assert_that(result).is_equal_to(expected)
