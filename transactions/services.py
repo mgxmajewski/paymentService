@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import iso8601
+import pytz
 
 
 @dataclass
@@ -64,6 +65,12 @@ def iso8601_date_parser(date_str):
 
 
 def convert_time_to_utc(date_instance):
+    utc = pytz.utc
+    date_in_utc = date_instance.astimezone(utc)
+    return date_in_utc
+
+
+def get_date_normalized_str(date_instance):
     return
 
 # base fetch url
