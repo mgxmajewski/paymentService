@@ -64,7 +64,7 @@ def iso8601_date_parser(date_str):
     return date_from_str
 
 
-def convert_time_to_utc(date_instance):
+def convert_date_to_utc(date_instance):
     utc = pytz.utc
     date_in_utc = date_instance.astimezone(utc)
     return date_in_utc
