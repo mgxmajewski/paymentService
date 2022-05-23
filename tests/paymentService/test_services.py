@@ -198,11 +198,11 @@ class TestTransactionsServices:
 
     def test_mask_card_nr(self):
         # given
-        card_nr_str = '2222222222222222'
+        card_nr_str = '1234222222226789'
 
         # when
         result = mask_card_nr(card_nr_str)
 
         # then
-        expected = '2222********2222'
+        expected = '1234********6789'
         assert_that(result).is_equal_to(expected)
