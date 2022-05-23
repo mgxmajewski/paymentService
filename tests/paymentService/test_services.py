@@ -4,7 +4,8 @@ import pytest
 from assertpy import assert_that
 
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
-    card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date
+    card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date, \
+    mask_card_nr
 
 
 @pytest.mark.django_db
@@ -195,7 +196,7 @@ class TestTransactionsServices:
     def prepare_mask_card_nr(self):
         self.mask_card_nr = mask_card_nr
 
-    def test_mask_card_nr(self, date_string, expected):
+    def test_mask_card_nr(self):
         # given
         card_nr_str = '2222222222222222'
 
