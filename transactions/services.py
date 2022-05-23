@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import iso8601
 
 
 @dataclass
@@ -57,9 +58,9 @@ def create_payment_info(processing_strategy_fn, data):
     return payment_info
 
 
-def iso8601_date_parser(date):
-    print(date)
-    return
+def iso8601_date_parser(date_str):
+    date_from_str = iso8601.parse_date(date_str)
+    return date_from_str
 
 # base fetch url
 # http://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
