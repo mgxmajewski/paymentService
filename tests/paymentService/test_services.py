@@ -4,7 +4,7 @@ import pytest
 from assertpy import assert_that
 
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
-    card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_string
+    card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date
 
 
 @pytest.mark.django_db
@@ -161,33 +161,33 @@ class TestTransactionsServices:
 
     @pytest.fixture(autouse=True)
     def prepare_get_valid_utc_string(self):
-        self.get_valid_utc_string = get_valid_utc_string
+        self.get_valid_utc_iso8061_date = get_valid_utc_iso8061_date
 
     # case1
     date_string_1 = '2021-05-13T01:01:43-08:00'
-    expected_1 = '2021-05-13T09:01:43Z'
+    expected_1 = datetime(2021, 5, 13, 9, 1, 43, tzinfo=timezone.utc)
     case_1 = date_string_1, expected_1
 
     # case2
     date_string_2 = '2021-05-14T08:27:09Z'
-    expected_2 = '2021-05-14T08:27:09Z'
+    expected_2 = datetime(2021, 5, 14, 8, 27, 9, tzinfo=timezone.utc)
     case_2 = date_string_2, expected_2
 
     # case3
     date_string_3 = '2021-05-13T09:00:05+02:00'
-    expected_3 = '2021-05-13T07:00:05Z'
+    expected_3 = datetime(2021, 5, 13, 7, 0, 5, tzinfo=timezone.utc)
     case_3 = date_string_3, expected_3
 
     # case4
     date_string_4 = '2021-05-14T18:32:26Z'
-    expected_4 = '2021-05-14T18:32:26Z'
+    expected_4 = datetime(2021, 5, 14, 18, 32, 26, tzinfo=timezone.utc)
     case_4 = date_string_4, expected_4
 
     @pytest.mark.parametrize("date_string, expected", [case_1, case_2, case_3, case_4])
     def test_get_valid_utc_string(self, date_string, expected):
 
         # when
-        result = get_valid_utc_string(date_string)
+        result = get_valid_utc_iso8061_date(date_string)
 
         # then
         assert_that(result).is_equal_to(expected)
