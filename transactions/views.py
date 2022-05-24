@@ -1,6 +1,7 @@
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .services import process_request
+from .services import process_request, InvalidDateString
 
 
 # Create your views here.
@@ -12,5 +13,8 @@ def get_server_check(request):
 
 @api_view(['POST'])
 def generate_report(request):
-    report = process_request(request.data)
+    try:
+        report = process_request(request.data)
+    except InvalidDateString:
+        return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
     return Response(report, content_type='application/json')
