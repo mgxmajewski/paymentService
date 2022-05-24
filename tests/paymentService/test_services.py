@@ -44,7 +44,7 @@ class TestTransactionsServices:
     CardStub = Card(**card_stub_data)
 
     payment_info_stub_data = {
-        'date': '2021-05-13T09:00:05+02:00',
+        'date': '2021-05-13T07:00:05Z',
         'type': 'card',
         'payment_mean': 'John Doe 1234********6789',
         'description': 'REF123457',
