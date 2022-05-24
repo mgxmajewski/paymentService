@@ -71,11 +71,14 @@ def pay_by_link_payment_info(data):
 
 
 def dp_payment_info(data):
+    temp_datetime = get_valid_utc_iso8061_date(data.created_at)
+    normalized_date_string = get_date_normalized_str(temp_datetime)
     amount = data.amount
     currency = data.currency
     description = data.description
     payment_mean = data.iban
     new_payment_info = PaymentInfo(type='dp',
+                                   date=normalized_date_string,
                                    amount=amount,
                                    currency=currency,
                                    description=description,
@@ -84,12 +87,14 @@ def dp_payment_info(data):
 
 
 def card_payment_info(data):
-    # new_payment_info.type = 'card'
+    temp_datetime = get_valid_utc_iso8061_date(data.created_at)
+    normalized_date_string = get_date_normalized_str(temp_datetime)
     amount = data.amount
     currency = data.currency
     description = data.description
     payment_mean = get_payment_mean_card_str(data)
     new_payment_info = PaymentInfo(type='card',
+                                   date=normalized_date_string,
                                    amount=amount,
                                    currency=currency,
                                    description=description,
