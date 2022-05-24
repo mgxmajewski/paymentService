@@ -122,5 +122,9 @@ def get_nbp_exchange_rate(date_of_transaction, currency_of_transaction):
     exchange_rate = float(exchange_rate_str)
     return exchange_rate
 
-def calculate_amount_in_pln(amount_of_transaction, exchange_name_of_transaction):
-    return
+
+def calculate_amount_in_pln(amount_of_transaction, exchange_rate_of_transaction):
+    price_in_currency = amount_of_transaction/100
+    exchange_result = price_in_currency * exchange_rate_of_transaction * 100
+    result_rounded_down = int(exchange_result)
+    return result_rounded_down
