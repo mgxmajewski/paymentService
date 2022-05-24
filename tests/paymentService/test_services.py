@@ -1,43 +1,74 @@
-from datetime import datetime, timezone, date, timedelta
+from datetime import datetime, timezone, timedelta
 
 import pytest
 from assertpy import assert_that
 
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
     card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date, \
-    mask_card_nr, get_nbp_exchange_rate, calculate_amount_in_pln, prepare_nbp_date
+    mask_card_nr, get_nbp_exchange_rate, calculate_amount_in_pln, prepare_nbp_date, PayByLink, DirectPayment, Card
 
 
 @pytest.mark.django_db
 class TestTransactionsServices:
+    pay_by_link_stub_data = {
+        'created_at': '2021-05-13T01:01:43-08:00',
+        'currency': 'EUR',
+        'amount': 3000,
+        'description': 'Gym membership',
+        'bank': 'mbank'
+    }
+
+    PayByLinkStub = PayByLink(**pay_by_link_stub_data)
+
+    dp_stub_data = {
+        'created_at': '2021-05-14T08:27:09Z',
+        'currency': 'USD',
+        'amount': 599,
+        'description': 'FastFood',
+        'iban': 'DE91100000000123456789',
+    }
+
+    DirectPaymentStub = DirectPayment(**dp_stub_data)
+
+    card_stub_data = {
+        'created_at': '2021-05-13T09:00:05+02:00',
+        'currency': 'PLN',
+        'amount': 2450,
+        'description': 'REF123457',
+        'cardholder_name': 'John',
+        'cardholder_surname': 'Doe',
+        'card_number': '2222222222222222'
+    }
+
+    CardStub = Card(**card_stub_data)
 
     @pytest.fixture(autouse=True)
     def prepare_get_payment_info(self):
         self.create_payment_info = create_payment_info
 
     # case1
+    data_1 = PayByLinkStub
     processing_strategy_1 = pay_by_link_payment_info
     expected_1 = 'pay_by_link'
-    case_1 = processing_strategy_1, expected_1
+    case_1 = processing_strategy_1, data_1, expected_1
 
     # case2
+    data_2 = DirectPaymentStub
     processing_strategy_2 = dp_payment_info
     expected_2 = 'dp'
-    case_2 = processing_strategy_2, expected_2
+    case_2 = processing_strategy_2, data_2, expected_2
 
     # case3
+    data_3 = CardStub
     processing_strategy_3 = card_payment_info
     expected_3 = 'card'
-    case_3 = processing_strategy_3, expected_3
+    case_3 = processing_strategy_3, data_3, expected_3
 
-    @pytest.mark.parametrize("processing_strategy, expected", [case_1, case_2, case_3])
-    def test_process_transaction_type(self, processing_strategy, expected):
+    @pytest.mark.parametrize("processing_strategy, data, expected", [case_1, case_2, case_3])
+    def test_process_transaction_type(self, processing_strategy, data, expected):
         """
         Ensure transaction type after processing matches the chosen strategy
         """
-
-        # given
-        data = {}
 
         # when
         result = self.create_payment_info(processing_strategy, data).type
