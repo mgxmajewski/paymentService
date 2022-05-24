@@ -41,6 +41,11 @@ class PaymentInfo(BaseModel):
     amount_in_pln: int
 
 
+class InvalidDateString(Exception):
+    """Raised when the date doesn't follow iso8061 standard"""
+    pass
+
+
 def process_request(request):
     result = []
     for key in request:
@@ -173,7 +178,11 @@ def get_payment_mean_card_str(data_source):
 
 
 def iso8601_date_parser(date_str):
-    date_from_str = iso8601.parse_date(date_str)
+    try:
+        date_from_str = iso8601.parse_date(date_str)
+    except Exception as e:
+        raise InvalidDateString(e)
+    print(date_from_str)
     return date_from_str
 
 
