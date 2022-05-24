@@ -5,7 +5,8 @@ from assertpy import assert_that
 
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
     card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date, \
-    mask_card_nr, get_nbp_exchange_rate, calculate_amount_in_pln, prepare_nbp_date, PayByLink, DirectPayment, Card
+    mask_card_nr, get_nbp_exchange_rate, calculate_amount_in_pln, prepare_nbp_date, PayByLink, DirectPayment, Card, \
+    PaymentInfo
 
 
 @pytest.mark.django_db
@@ -41,6 +42,18 @@ class TestTransactionsServices:
     }
 
     CardStub = Card(**card_stub_data)
+
+    payment_info_stub_data = {
+        'date': '2021-05-13T09:00:05+02:00',
+        'type': 'card',
+        'payment_mean': 'John Doe 1234********6789',
+        'description': 'REF123457',
+        'currency': 'PLN',
+        'amount': 2450,
+        'amount_in_pln': 2450
+    }
+
+    PaymentInfoStub = PaymentInfo(**payment_info_stub_data)
 
     @pytest.fixture(autouse=True)
     def prepare_get_payment_info(self):
@@ -172,6 +185,18 @@ class TestTransactionsServices:
 
         # then
         expected = 13494
+        assert_that(result).is_equal_to(expected)
+
+    def test_full_process_for_card_payment(self):
+        # given
+        processing_strategy = card_payment_info
+        data = self.CardStub
+
+        # when
+        result = self.create_payment_info(processing_strategy, data)
+
+        # then
+        expected = self.PaymentInfoStub
         assert_that(result).is_equal_to(expected)
 
     @pytest.fixture(autouse=True)
@@ -317,7 +342,3 @@ class TestTransactionsServices:
     # @pytest.fixture(autouse=True)
     # def prepare_mask_card_nr(self):
     #     self.parse_crated_at_date = parse_crated_at_date
-
-
-
-
