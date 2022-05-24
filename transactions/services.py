@@ -33,11 +33,11 @@ class Card(BaseModel):
 
 class PaymentInfo(BaseModel):
     date: str = 'unprocessed'
-    type: str = 'unprocessed'
+    type: str
     amount: int
     description: str
     currency: str
-    payment_mean = 'unprocessed'
+    payment_mean: str
 
 
 def map_direct_fields(data_source, data_receiver):
