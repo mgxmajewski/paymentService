@@ -62,10 +62,14 @@ def pay_by_link_payment_info(data):
 
 
 def dp_payment_info(data):
-    new_payment_info = PaymentInfo()
-    new_payment_info.type = 'dp'
-    map_direct_fields(data, new_payment_info)
-    new_payment_info.payment_mean = data.iban
+    # new_payment_info.type = 'dp'
+    # map_direct_fields(data, new_payment_info)
+    amount = data.amount
+    currency = data.currency
+    description = data.description
+    payment_mean = data.iban
+    new_payment_info = PaymentInfo(type='dp', amount=amount, currency=currency, description=description,
+                                   payment_mean=payment_mean)
     return new_payment_info
 
 
