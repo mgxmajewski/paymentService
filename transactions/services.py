@@ -26,6 +26,23 @@ def map_direct_fields(data_to_map, data_receiver):
         setattr(data_receiver, field_to_update, new_val)
 
 
+# list of the credit card fields used to map to payment_mean
+LIST_OF_CARD_FIELDS_TO_MAP = ['cardholder_name', 'cardholder_surname', 'card_number']
+
+
+def map_card_to_payment_mean(data_source, data_receiver):
+    for field_to_update in LIST_OF_CARD_FIELDS_TO_MAP:
+        if field_to_update not in data_source:
+            # good place to collect information if request data was complete
+            return
+
+    cardholder_name = data_source['cardholder_name']
+    cardholder_surname = data_source['cardholder_surname']
+    card_number = data_source['card_number']
+    masked_card_number = mask_card_nr(card_number)
+    data_receiver.payment_mean = f"{cardholder_name} {cardholder_surname} {masked_card_number}"
+
+
 def pay_by_link_payment_info(data):
     new_payment_info = PaymentInfo()
     new_payment_info.type = 'pay_by_link'
@@ -39,8 +56,8 @@ def pay_by_link_payment_info(data):
 
 def dp_payment_info(data):
     new_payment_info = PaymentInfo()
-    map_direct_fields(data, new_payment_info)
     new_payment_info.type = 'dp'
+    map_direct_fields(data, new_payment_info)
     if 'iban' in data:
         new_payment_info.payment_mean = data['iban']
     else:
@@ -52,6 +69,7 @@ def dp_payment_info(data):
 def card_payment_info(data):
     new_payment_info = PaymentInfo()
     new_payment_info.type = 'card'
+    map_card_to_payment_mean(data, new_payment_info)
     return new_payment_info
 
 
