@@ -41,32 +41,21 @@ class PaymentInfo(BaseModel):
     amount_in_pln: int = 0
 
 
-def map_direct_fields(data_source, data_receiver):
-    data_receiver.amount = data_source.amount
-    data_receiver.currency = data_source.currency
-    data_receiver.description = data_source.description
-
-
-def get_payment_mean_card_str(data_source):
-    cardholder_name = data_source.cardholder_name
-    cardholder_surname = data_source.cardholder_surname
-    card_number = data_source.card_number
-    masked_card_number = mask_card_nr(card_number)
-    return f"{cardholder_name} {cardholder_surname} {masked_card_number}"
-
-
 def pay_by_link_payment_info(data):
-    amount = data.amount
-    currency = data.currency
-    description = data.description
-    payment_mean = data.bank
     # handle the date
     temp_datetime = get_valid_utc_iso8061_date(data.created_at)
     normalized_date_string = get_date_normalized_str(temp_datetime)
-    # handle the conversion to PLN
-    temp_datetime_nbp = prepare_nbp_date(temp_datetime)
-    temp_exchange_rate = get_nbp_exchange_rate(temp_datetime_nbp, currency)
-    amount_in_pln = calculate_amount_in_pln(amount, temp_exchange_rate)
+
+    # direct mapping
+    amount = data.amount
+    currency = data.currency
+    description = data.description
+
+    # conversion to PLN handler
+    calculated_amount_in_pln = conversion_handler(temp_datetime, amount, currency)
+
+    # strategy specific mapping
+    payment_mean = data.bank
 
     new_payment_info = PaymentInfo(type='pay_by_link',
                                    date=normalized_date_string,
@@ -74,24 +63,32 @@ def pay_by_link_payment_info(data):
                                    currency=currency,
                                    description=description,
                                    payment_mean=payment_mean,
-                                   amount_in_pln=amount_in_pln)
+                                   amount_in_pln=calculated_amount_in_pln)
     return new_payment_info
 
 
 def dp_payment_info(data):
+    # handle the date
     temp_datetime = get_valid_utc_iso8061_date(data.created_at)
     normalized_date_string = get_date_normalized_str(temp_datetime)
+
+    # direct mapping
     amount = data.amount
     currency = data.currency
     description = data.description
+
+    # conversion to PLN handler
+    calculated_amount_in_pln = conversion_handler(temp_datetime, amount, currency)
+
+    # strategy specific mapping
     payment_mean = data.iban
-    normalized_date_string = get_date_normalized_str(temp_datetime)
     new_payment_info = PaymentInfo(type='dp',
                                    date=normalized_date_string,
                                    amount=amount,
                                    currency=currency,
                                    description=description,
-                                   payment_mean=payment_mean)
+                                   payment_mean=payment_mean,
+                                   amount_in_pln=calculated_amount_in_pln)
     return new_payment_info
 
 
@@ -124,6 +121,14 @@ def card_payment_info(data):
 def create_payment_info(processing_strategy_fn, data):
     payment_info = processing_strategy_fn(data)
     return payment_info
+
+
+def get_payment_mean_card_str(data_source):
+    cardholder_name = data_source.cardholder_name
+    cardholder_surname = data_source.cardholder_surname
+    card_number = data_source.card_number
+    masked_card_number = mask_card_nr(card_number)
+    return f"{cardholder_name} {cardholder_surname} {masked_card_number}"
 
 
 def iso8601_date_parser(date_str):
@@ -190,3 +195,9 @@ def conversion_handler(date, amount, currency):
         calculated_amount_in_pln = calculate_amount_in_pln(amount, temp_exchange_rate)
 
     return calculated_amount_in_pln
+
+
+def map_direct_fields(data_source, data_receiver):
+    data_receiver.amount = data_source.amount
+    data_receiver.currency = data_source.currency
+    data_receiver.description = data_source.description
