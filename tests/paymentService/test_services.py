@@ -37,7 +37,7 @@ class TestTransactionsServices:
         'description': 'REF123457',
         'cardholder_name': 'John',
         'cardholder_surname': 'Doe',
-        'card_number': '2222222222222222'
+        'card_number': '1234222222226789'
     }
 
     CardStub = Card(**card_stub_data)
@@ -78,19 +78,19 @@ class TestTransactionsServices:
 
     # case1
     processing_strategy_1 = pay_by_link_payment_info
-    data_1 = {'bank': 'mbank'}
+    data_1 = PayByLinkStub
     expected_1 = 'mbank'
     case_1 = processing_strategy_1, data_1, expected_1
 
     # case2
     processing_strategy_2 = dp_payment_info
-    data_2 = {'iban': 'DE91100000000123456789'}
+    data_2 = DirectPaymentStub
     expected_2 = 'DE91100000000123456789'
     case_2 = processing_strategy_2, data_2, expected_2
-    
+
     # case3
     processing_strategy_3 = card_payment_info
-    data_3 = {'cardholder_name': 'John', 'cardholder_surname': 'Doe', 'card_number': '1234222222226789'}
+    data_3 = CardStub
     expected_3 = 'John Doe 1234********6789'
     case_3 = processing_strategy_3, data_3, expected_3
 
@@ -111,15 +111,14 @@ class TestTransactionsServices:
         Ensure transaction type after processing matches the chosen strategy
         """
 
-        # given
         processing_strategy = dp_payment_info
-        data = {"amount": 100}
+        data = self.DirectPaymentStub
 
         # when
         result = self.create_payment_info(processing_strategy, data).amount
 
         # then
-        assert_that(result).is_equal_to(100)
+        assert_that(result).is_equal_to(599)
 
     def test_process_transaction_currency(self):
         """
@@ -128,7 +127,7 @@ class TestTransactionsServices:
 
         # given
         processing_strategy = dp_payment_info
-        data = {"currency": "USD"}
+        data = self.DirectPaymentStub
 
         # when
         result = self.create_payment_info(processing_strategy, data).currency
@@ -143,7 +142,7 @@ class TestTransactionsServices:
 
         # given
         processing_strategy = dp_payment_info
-        data = {"description": "FastFood"}
+        data = self.DirectPaymentStub
 
         # when
         result = self.create_payment_info(processing_strategy, data).description

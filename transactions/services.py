@@ -41,31 +41,26 @@ class PaymentInfo(BaseModel):
 
 
 # list of the fields with direct mapping (one to one no name changing)
-DIRECTLY_MAPPING_FIELDS = ['amount', 'currency', 'description']
+# DIRECTLY_MAPPING_FIELDS = ['amount', 'currency', 'description']
 
 
-def map_direct_fields(data_to_map, data_receiver):
-    for field_to_update in DIRECTLY_MAPPING_FIELDS:
-        if field_to_update not in data_to_map:
-            # good place to collect information if request data was complete
-            continue
-        new_val = data_to_map[field_to_update]
-        setattr(data_receiver, field_to_update, new_val)
-
+def map_direct_fields(data_source, data_receiver):
+    data_receiver.amount = data_source.amount
+    data_receiver.currency = data_source.currency
+    data_receiver.description = data_source.description
 
 # list of the credit card fields used to map to payment_mean
-LIST_OF_CARD_FIELDS_TO_MAP = ['cardholder_name', 'cardholder_surname', 'card_number']
+# LIST_OF_CARD_FIELDS_TO_MAP = ['cardholder_name', 'cardholder_surname', 'card_number']
 
 
 def map_card_to_payment_mean(data_source, data_receiver):
-    for field_to_update in LIST_OF_CARD_FIELDS_TO_MAP:
-        if field_to_update not in data_source:
-            # good place to collect information if request data was complete
-            return
-
-    cardholder_name = data_source['cardholder_name']
-    cardholder_surname = data_source['cardholder_surname']
-    card_number = data_source['card_number']
+    # for field_to_update in LIST_OF_CARD_FIELDS_TO_MAP:
+    #     if field_to_update not in data_source:
+    #         # good place to collect information if request data was complete
+    #         return
+    cardholder_name = data_source.cardholder_name
+    cardholder_surname = data_source.cardholder_surname
+    card_number = data_source.card_number
     masked_card_number = mask_card_nr(card_number)
     data_receiver.payment_mean = f"{cardholder_name} {cardholder_surname} {masked_card_number}"
 
@@ -73,11 +68,7 @@ def map_card_to_payment_mean(data_source, data_receiver):
 def pay_by_link_payment_info(data):
     new_payment_info = PaymentInfo()
     new_payment_info.type = 'pay_by_link'
-    if 'bank' in data:
-        new_payment_info.payment_mean = data['bank']
-    else:
-        # good place to collect information if request data was complete
-        pass
+    new_payment_info.payment_mean = data.bank
     return new_payment_info
 
 
@@ -85,11 +76,7 @@ def dp_payment_info(data):
     new_payment_info = PaymentInfo()
     new_payment_info.type = 'dp'
     map_direct_fields(data, new_payment_info)
-    if 'iban' in data:
-        new_payment_info.payment_mean = data['iban']
-    else:
-        # good place to collect information if request data was complete
-        pass
+    new_payment_info.payment_mean = data.iban
     return new_payment_info
 
 
