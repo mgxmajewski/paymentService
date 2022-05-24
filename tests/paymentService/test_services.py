@@ -296,7 +296,7 @@ class TestTransactionsServices:
         assert_that(result).is_equal_to(expected)
 
     @pytest.fixture(autouse=True)
-    def prepare_get_valid_utc_string(self):
+    def prepare_get_valid_utc_iso8061_date(self):
         self.get_valid_utc_iso8061_date = get_valid_utc_iso8061_date
 
     # case1
@@ -349,7 +349,7 @@ class TestTransactionsServices:
         assert_that(result).is_equal_to(expected)
 
     @pytest.fixture(autouse=True)
-    def prepare_mask_card_nr(self):
+    def prepare_get_exchange_rate(self):
         self.get_nbp_exchange_rate = get_nbp_exchange_rate
 
     def test_get_exchange_rate(self):
@@ -365,7 +365,7 @@ class TestTransactionsServices:
         assert_that(result).is_equal_to(expected)
 
     @pytest.fixture(autouse=True)
-    def prepare_mask_card_nr(self):
+    def prepare_calculate_amount_in_pln(self):
         self.calculate_amount_in_pln = calculate_amount_in_pln
 
     def test_calculate_amount_in_pln(self):
@@ -381,7 +381,7 @@ class TestTransactionsServices:
         assert_that(result).is_equal_to(expected)
 
     @pytest.fixture(autouse=True)
-    def prepare_mask_card_nr(self):
+    def prepare_prepare_nbp_date(self):
         self.prepare_nbp_date = prepare_nbp_date
 
     def test_prepare_nbp_date(self):
