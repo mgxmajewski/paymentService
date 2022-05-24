@@ -55,14 +55,14 @@ def pay_by_link_payment_info(data):
     calculated_amount_in_pln = conversion_handler(temp_datetime, amount, currency)
 
     # strategy specific mapping
-    payment_mean = data.bank
+    bank = data.bank
 
     new_payment_info = PaymentInfo(type='pay_by_link',
                                    date=normalized_date_string,
                                    amount=amount,
                                    currency=currency,
                                    description=description,
-                                   payment_mean=payment_mean,
+                                   payment_mean=bank,
                                    amount_in_pln=calculated_amount_in_pln)
     return new_payment_info
 
@@ -81,13 +81,14 @@ def dp_payment_info(data):
     calculated_amount_in_pln = conversion_handler(temp_datetime, amount, currency)
 
     # strategy specific mapping
-    payment_mean = data.iban
+    iban = data.iban
+
     new_payment_info = PaymentInfo(type='dp',
                                    date=normalized_date_string,
                                    amount=amount,
                                    currency=currency,
                                    description=description,
-                                   payment_mean=payment_mean,
+                                   payment_mean=iban,
                                    amount_in_pln=calculated_amount_in_pln)
     return new_payment_info
 
@@ -106,14 +107,14 @@ def card_payment_info(data):
     calculated_amount_in_pln = conversion_handler(temp_datetime, amount, currency)
 
     # strategy specific mapping
-    payment_mean_masked_card_details = get_payment_mean_card_str(data)
+    masked_card_details = get_payment_mean_card_str(data)
 
     result = PaymentInfo(type='card',
                          date=normalized_date_string,
                          amount=amount,
                          currency=currency,
                          description=description,
-                         payment_mean=payment_mean_masked_card_details,
+                         payment_mean=masked_card_details,
                          amount_in_pln=calculated_amount_in_pln)
     return result
 
