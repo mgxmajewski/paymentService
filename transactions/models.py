@@ -1,14 +1,11 @@
 from django.db import models
 
 
-# Create your models here.
-
-
-# class PayByLink:
-#     def __int__(self, created_at, currency, amount, description, bank):
-#         self.created_at = created_at
-#         self.currency = currency
-#         self.amount = amount
-#         self.description = description
-#         self.bank = bank
-
+class PaymentInfoModel(models.Model):
+    date: models.CharField(max_length=30)
+    type: models.CharField(max_length=30)
+    description: models.CharField(max_length=30)
+    currency: models.CharField(max_length=30)
+    payment_mean: models.CharField(max_length=30)
+    amount: models.IntegerField()
+    amount_in_pln: models.IntegerField()
