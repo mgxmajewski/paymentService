@@ -16,5 +16,5 @@ def generate_report(request):
     try:
         report = process_request(request.data)
     except InvalidDateString:
-        return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
+        return Response('Bad request: "created_at" string(date-field) not valid.', status=status.HTTP_400_BAD_REQUEST)
     return Response(report, content_type='application/json')
