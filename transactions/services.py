@@ -42,10 +42,11 @@ class PaymentInfo(BaseModel):
 
 
 def process_request(request):
+    # print(request)
     result = []
     for key in request:
-        if key is 'pay_by_link_payment':
-            for transaction in request['pay_by_link_payment']:
+        if key == 'pay_by_link':
+            for transaction in request['pay_by_link']:
                 data = PayByLink(
                     created_at=transaction['created_at'],
                     currency=transaction['currency'],
@@ -53,18 +54,18 @@ def process_request(request):
                     description=transaction['description'],
                     bank=transaction['bank']
                 )
-                result.append(create_payment_info(pay_by_link_payment_info, data))
-        if key is 'dp':
+                result.append(create_payment_info(pay_by_link_payment_info, data).json())
+        if key == 'dp':
             for transaction in request['dp']:
                 data = DirectPayment(
                     created_at=transaction['created_at'],
                     currency=transaction['currency'],
                     amount=transaction['amount'],
                     description=transaction['description'],
-                    bank=transaction['iban']
+                    iban=transaction['iban']
                 )
-                result.append(create_payment_info(dp_payment_info, data))
-        if key is 'card':
+                result.append(create_payment_info(dp_payment_info, data).json())
+        if key == 'card':
             for transaction in request['card']:
                 data = Card(
                     created_at=transaction['created_at'],
@@ -75,8 +76,7 @@ def process_request(request):
                     cardholder_surname=transaction['cardholder_surname'],
                     card_number=transaction['card_number']
                 )
-                result.append(create_payment_info(card_payment_info, data))
-
+                result.append(create_payment_info(card_payment_info, data).json())
     return result
 
 
@@ -227,7 +227,7 @@ def prepare_nbp_date(datetime_to_parse):
 
 
 def conversion_handler(date, amount, currency):
-    if currency is 'PLN':
+    if currency == 'PLN':
         calculated_amount_in_pln = amount
     else:
         temp_datetime_nbp = prepare_nbp_date(date)
