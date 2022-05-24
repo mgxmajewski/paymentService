@@ -34,9 +34,9 @@ class Card(BaseModel):
 class PaymentInfo(BaseModel):
     date: str = 'unprocessed'
     type: str = 'unprocessed'
-    amount: int = 0
-    description = 'unprocessed'
-    currency = 'unprocessed'
+    amount: int
+    description: str
+    currency: str
     payment_mean = 'unprocessed'
 
 
@@ -55,8 +55,15 @@ def get_payment_mean_card_str(data_source):
 
 
 def pay_by_link_payment_info(data):
+    amount = data.amount
+    currency = data.currency
+    description = data.description
     payment_mean = data.bank
-    new_payment_info = PaymentInfo(type='pay_by_link', payment_mean=payment_mean)
+    new_payment_info = PaymentInfo(type='pay_by_link',
+                                   amount=amount,
+                                   currency=currency,
+                                   description=description,
+                                   payment_mean=payment_mean)
     return new_payment_info
 
 
@@ -75,8 +82,15 @@ def dp_payment_info(data):
 
 def card_payment_info(data):
     # new_payment_info.type = 'card'
+    amount = data.amount
+    currency = data.currency
+    description = data.description
     payment_mean = get_payment_mean_card_str(data)
-    new_payment_info = PaymentInfo(type='card', payment_mean=payment_mean)
+    new_payment_info = PaymentInfo(type='card',
+                                   amount=amount,
+                                   currency=currency,
+                                   description=description,
+                                   payment_mean=payment_mean)
     return new_payment_info
 
 
