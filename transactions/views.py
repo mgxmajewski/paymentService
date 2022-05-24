@@ -13,4 +13,4 @@ def get_server_check(request):
 @api_view(['POST'])
 def generate_report(request):
     report = process_request(request.data)
-    return Response({'report': report}, content_type='application/json')
+    return Response(report, content_type='application/json')
