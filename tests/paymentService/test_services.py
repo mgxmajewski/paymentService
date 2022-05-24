@@ -240,12 +240,6 @@ class TestTransactionsServices:
     expected_2 = [CardPaymentInfoStub.dict(), PayByLinkInfoStub.dict()]
     case_2 = request_2, expected_2
 
-    # # case3
-    # processing_strategy_3 = card_payment_info
-    # data_3 = CardStub
-    # expected_3 = 'John Doe 1234********6789'
-    # case_3 = processing_strategy_3, data_3, expected_3
-
     @pytest.mark.parametrize("test_request, expected", [case_1, case_2])
     def test_process_request(self, test_request, expected):
         # when
