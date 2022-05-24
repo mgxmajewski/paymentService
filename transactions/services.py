@@ -46,7 +46,7 @@ def map_direct_fields(data_source, data_receiver):
     data_receiver.description = data_source.description
 
 
-def map_card_to_payment_mean(data_source, data_receiver):
+def get_payment_mean_card_str(data_source, data_receiver):
     cardholder_name = data_source.cardholder_name
     cardholder_surname = data_source.cardholder_surname
     card_number = data_source.card_number
@@ -72,7 +72,7 @@ def dp_payment_info(data):
 def card_payment_info(data):
     new_payment_info = PaymentInfo()
     new_payment_info.type = 'card'
-    map_card_to_payment_mean(data, new_payment_info)
+    get_payment_mean_card_str(data, new_payment_info)
     return new_payment_info
 
 
