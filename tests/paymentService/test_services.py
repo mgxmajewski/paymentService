@@ -5,7 +5,7 @@ from assertpy import assert_that
 
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
     card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date, \
-    mask_card_nr, get_nbp_exchange_rate, calculate_amount_in_pln
+    mask_card_nr, get_nbp_exchange_rate, calculate_amount_in_pln, prepare_nbp_date
 
 
 @pytest.mark.django_db
@@ -243,4 +243,19 @@ class TestTransactionsServices:
 
         # then
         expected = 2219
+        assert_that(result).is_equal_to(expected)
+
+    @pytest.fixture(autouse=True)
+    def prepare_mask_card_nr(self):
+        self.prepare_nbp_date = prepare_nbp_date
+
+    def test_prepare_nbp_date(self):
+        # given
+        datetime_for_nbp = datetime(2021, 5, 14, 1, 1, 43, tzinfo=timezone(timedelta(days=-1, seconds=57600), '-08:00'))
+
+        # when
+        result = prepare_nbp_date(datetime_for_nbp)
+
+        # then
+        expected = '2021-05-14'
         assert_that(result).is_equal_to(expected)
