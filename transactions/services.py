@@ -42,7 +42,6 @@ class PaymentInfo(BaseModel):
 
 
 def process_request(request):
-    # print(request)
     result = []
     for key in request:
         if key == 'pay_by_link':
@@ -54,7 +53,7 @@ def process_request(request):
                     description=transaction['description'],
                     bank=transaction['bank']
                 )
-                result.append(create_payment_info(pay_by_link_payment_info, data).json())
+                result.append(create_payment_info(pay_by_link_payment_info, data).dict())
         if key == 'dp':
             for transaction in request['dp']:
                 data = DirectPayment(
@@ -64,7 +63,7 @@ def process_request(request):
                     description=transaction['description'],
                     iban=transaction['iban']
                 )
-                result.append(create_payment_info(dp_payment_info, data).json())
+                result.append(create_payment_info(dp_payment_info, data).dict())
         if key == 'card':
             for transaction in request['card']:
                 data = Card(
@@ -76,7 +75,8 @@ def process_request(request):
                     cardholder_surname=transaction['cardholder_surname'],
                     card_number=transaction['card_number']
                 )
-                result.append(create_payment_info(card_payment_info, data).json())
+                result.append(create_payment_info(card_payment_info, data).dict())
+    # result = sorted(result, key=lambda x: x['date'], reverse=True)
     return result
 
 
@@ -207,7 +207,6 @@ def get_nbp_exchange_rate(date_of_transaction, currency_of_transaction):
     selected_rate_type = 'bid'
     payload_from_nbp = requests.get(
         f'https://api.nbp.pl/api/exchangerates/rates/c/{currency_of_transaction.lower()}/{date_of_transaction}/?format=json')
-    print(payload_from_nbp.json())
     payload_json = payload_from_nbp.json()
     rates_from_nbp = payload_json['rates'][0]
     exchange_rate_str = rates_from_nbp[selected_rate_type]

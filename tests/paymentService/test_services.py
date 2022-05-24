@@ -231,12 +231,12 @@ class TestTransactionsServices:
 
     # case1
     request_1 = RequestStub_1
-    expected_1 = [PayByLinkInfoStub.json()]
+    expected_1 = [PayByLinkInfoStub.dict()]
     case_1 = request_1, expected_1
 
     # case1
     request_2 = RequestStub_2
-    expected_2 = [PayByLinkInfoStub.json(), CardPaymentInfoStub.json()]
+    expected_2 = [PayByLinkInfoStub.dict(), CardPaymentInfoStub.dict()]
     case_2 = request_2, expected_2
 
     # # case3
