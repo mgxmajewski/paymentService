@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import iso8601
 import pytz
+import requests
 
 
 @dataclass
@@ -106,6 +107,20 @@ def mask_card_nr(card_nr_str):
     masked_digits = '*' * mask_width
     masked_number = f'{first_four}{masked_digits}{last_four}'
     return masked_number
+
+
+def get_nbp_exchange_rate(date_of_transaction, currency_of_transaction):
+    # QUESTION. Shouldn't here be a 'ask'? Now the specification indicates otherwise.
+    # The user gets currency in lower price (not like in real life).
+    selected_rate_type = 'bid'
+    payload_from_nbp = requests.get(
+        f'https://api.nbp.pl/api/exchangerates/rates/c/{currency_of_transaction.lower()}/{date_of_transaction}/?format=json')
+    print(payload_from_nbp.json())
+    payload_json = payload_from_nbp.json()
+    rates_from_nbp = payload_json['rates'][0]
+    exchange_rate_str = rates_from_nbp[selected_rate_type]
+    exchange_rate = float(exchange_rate_str)
+    return exchange_rate
 
 # base fetch url
 # http://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
