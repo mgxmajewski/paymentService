@@ -55,11 +55,14 @@ def get_payment_mean_card_str(data_source):
 
 
 def pay_by_link_payment_info(data):
+    temp_datetime = get_valid_utc_iso8061_date(data.created_at)
+    normalized_date_string = get_date_normalized_str(temp_datetime)
     amount = data.amount
     currency = data.currency
     description = data.description
     payment_mean = data.bank
     new_payment_info = PaymentInfo(type='pay_by_link',
+                                   date=normalized_date_string,
                                    amount=amount,
                                    currency=currency,
                                    description=description,
