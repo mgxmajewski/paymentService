@@ -11,6 +11,7 @@ from transactions.services import create_payment_info, pay_by_link_payment_info,
 
 @pytest.mark.django_db
 class TestTransactionsServices:
+    # Transactions stubs
     pay_by_link_stub_data = {
         'created_at': '2021-05-13T01:01:43-08:00',
         'currency': 'EUR',
@@ -18,7 +19,6 @@ class TestTransactionsServices:
         'description': 'Gym membership',
         'bank': 'mbank'
     }
-
     PayByLinkStub = PayByLink(**pay_by_link_stub_data)
 
     dp_stub_data = {
@@ -28,7 +28,6 @@ class TestTransactionsServices:
         'description': 'FastFood',
         'iban': 'DE91100000000123456789',
     }
-
     DirectPaymentStub = DirectPayment(**dp_stub_data)
 
     card_stub_data = {
@@ -40,9 +39,9 @@ class TestTransactionsServices:
         'cardholder_surname': 'Doe',
         'card_number': '1234222222226789'
     }
-
     CardStub = Card(**card_stub_data)
 
+    # Transactions stubs
     pay_by_link_payment_info_stub_data = {
         'date': '2021-05-13T09:01:43Z',
         'type': 'pay_by_link',
@@ -52,7 +51,6 @@ class TestTransactionsServices:
         'amount': 3000,
         'amount_in_pln': 13494
     }
-
     PayByLinkInfoStub = PaymentInfo(**pay_by_link_payment_info_stub_data)
 
     card_payment_info_stub_data = {
@@ -64,12 +62,21 @@ class TestTransactionsServices:
         'amount': 2450,
         'amount_in_pln': 2450
     }
-
     CardPaymentInfoStub = PaymentInfo(**card_payment_info_stub_data)
 
-    RequestStub = {
+    # Requests stubs
+    RequestStub_1 = {
         'pay_by_link_payment': [
             pay_by_link_stub_data
+        ],
+    }
+
+    RequestStub_2 = {
+        'pay_by_link_payment': [
+            pay_by_link_stub_data
+        ],
+        'card': [
+            card_payment_info_stub_data
         ]
     }
 
@@ -217,20 +224,36 @@ class TestTransactionsServices:
         expected = self.CardPaymentInfoStub
         assert_that(result).is_equal_to(expected)
 
+    # Request process tests
     @pytest.fixture(autouse=True)
     def prepare_test_process_request(self):
         self.process_request = process_request
 
-    def test_process_request(self):
-        # given
-        request = self.RequestStub
+    # case1
+    request_1 = RequestStub_1
+    expected_1 = [PayByLinkInfoStub]
+    case_1 = request_1, expected_1
+
+    # case1
+    request_2 = RequestStub_2
+    expected_2 = [PayByLinkInfoStub, CardPaymentInfoStub]
+    case_2 = request_2, expected_2
+
+    # # case3
+    # processing_strategy_3 = card_payment_info
+    # data_3 = CardStub
+    # expected_3 = 'John Doe 1234********6789'
+    # case_3 = processing_strategy_3, data_3, expected_3
+
+    @pytest.mark.parametrize("test_request, expected", [case_1, case_2])
+    def test_process_request(self, test_request, expected):
         # when
-        result = self.process_request(request)
+        result = self.process_request(test_request)
 
         # then
-        expected = [self.PayByLinkInfoStub]
         assert_that(result).is_equal_to(expected)
 
+    # Helpers tests
     @pytest.fixture(autouse=True)
     def prepare_iso8601_date_parser(self):
         self.iso8601_date_parser = iso8601_date_parser
