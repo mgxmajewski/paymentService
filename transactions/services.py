@@ -76,7 +76,8 @@ def process_request(request):
                     card_number=transaction['card_number']
                 )
                 result.append(create_payment_info(card_payment_info, data).dict())
-    # result = sorted(result, key=lambda x: x['date'], reverse=True)
+    # sort the report
+    result = sorted(result, key=lambda x: iso8601_date_parser(x['date']))
     return result
 
 
