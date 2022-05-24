@@ -182,7 +182,6 @@ def iso8601_date_parser(date_str):
         date_from_str = iso8601.parse_date(date_str)
     except Exception as e:
         raise InvalidDateString(e)
-    print(date_from_str)
     return date_from_str
 
 
