@@ -66,13 +66,13 @@ class TestTransactionsServices:
 
     # Requests stubs
     RequestStub_1 = {
-        'pay_by_link_payment': [
+        'pay_by_link': [
             pay_by_link_transaction_stub_data
         ],
     }
 
     RequestStub_2 = {
-        'pay_by_link_payment': [
+        'pay_by_link': [
             pay_by_link_transaction_stub_data
         ],
         'card': [
@@ -231,12 +231,12 @@ class TestTransactionsServices:
 
     # case1
     request_1 = RequestStub_1
-    expected_1 = [PayByLinkInfoStub]
+    expected_1 = [PayByLinkInfoStub.json()]
     case_1 = request_1, expected_1
 
     # case1
     request_2 = RequestStub_2
-    expected_2 = [PayByLinkInfoStub, CardPaymentInfoStub]
+    expected_2 = [PayByLinkInfoStub.json(), CardPaymentInfoStub.json()]
     case_2 = request_2, expected_2
 
     # # case3
