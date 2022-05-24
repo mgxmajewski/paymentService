@@ -178,6 +178,8 @@ def get_payment_mean_card_str(data_source):
     return f"{cardholder_name} {cardholder_surname} {masked_card_number}"
 
 
+# Created to make flexible policy for restricting artificial fixes while parsing because of some
+# inconsistencies specified here: https://pyiso8601.readthedocs.io/en/latest/#where-it-differs-from-iso-8601
 def strict_iso8601(func):
     @functools.wraps(func)
     def validator(*args, **kwargs):
