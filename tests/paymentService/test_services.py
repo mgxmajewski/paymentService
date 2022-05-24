@@ -150,7 +150,7 @@ class TestTransactionsServices:
         # then
         assert_that(result).is_equal_to("FastFood")
 
-    def test_date_processing(self):
+    def test_process_transaction_date(self):
         # given
         processing_strategy = pay_by_link_payment_info
         data = self.PayByLinkStub
