@@ -40,24 +40,13 @@ class PaymentInfo(BaseModel):
     payment_mean = 'unprocessed'
 
 
-# list of the fields with direct mapping (one to one no name changing)
-# DIRECTLY_MAPPING_FIELDS = ['amount', 'currency', 'description']
-
-
 def map_direct_fields(data_source, data_receiver):
     data_receiver.amount = data_source.amount
     data_receiver.currency = data_source.currency
     data_receiver.description = data_source.description
 
-# list of the credit card fields used to map to payment_mean
-# LIST_OF_CARD_FIELDS_TO_MAP = ['cardholder_name', 'cardholder_surname', 'card_number']
-
 
 def map_card_to_payment_mean(data_source, data_receiver):
-    # for field_to_update in LIST_OF_CARD_FIELDS_TO_MAP:
-    #     if field_to_update not in data_source:
-    #         # good place to collect information if request data was complete
-    #         return
     cardholder_name = data_source.cardholder_name
     cardholder_surname = data_source.cardholder_surname
     card_number = data_source.card_number
