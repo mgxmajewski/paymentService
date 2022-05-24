@@ -3,6 +3,7 @@ import iso8601
 import pytz
 import requests
 from pydantic import BaseModel
+import functools
 
 
 class PayByLink(BaseModel):
@@ -177,6 +178,16 @@ def get_payment_mean_card_str(data_source):
     return f"{cardholder_name} {cardholder_surname} {masked_card_number}"
 
 
+def strict_iso8601(func):
+    @functools.wraps(func)
+    def validator(*args, **kwargs):
+        if 'T' not in str(args):
+            raise InvalidDateString
+        return func(*args, **kwargs)
+    return validator
+
+
+@strict_iso8601
 def iso8601_date_parser(date_str):
     try:
         date_from_str = iso8601.parse_date(date_str)
