@@ -76,7 +76,7 @@ class TestTransactionsServices:
             pay_by_link_stub_data
         ],
         'card': [
-            card_payment_info_stub_data
+            card_stub_data
         ]
     }
 

@@ -46,7 +46,6 @@ def process_request(request):
     for key in request:
         if key is 'pay_by_link_payment':
             for transaction in request['pay_by_link_payment']:
-                # print(f'transaction {transaction}')
                 data = PayByLink(
                     created_at=transaction['created_at'],
                     currency=transaction['currency'],
@@ -55,6 +54,28 @@ def process_request(request):
                     bank=transaction['bank']
                 )
                 result.append(create_payment_info(pay_by_link_payment_info, data))
+        if key is 'dp':
+            for transaction in request['dp']:
+                data = DirectPayment(
+                    created_at=transaction['created_at'],
+                    currency=transaction['currency'],
+                    amount=transaction['amount'],
+                    description=transaction['description'],
+                    bank=transaction['iban']
+                )
+                result.append(create_payment_info(dp_payment_info, data))
+        if key is 'card':
+            for transaction in request['card']:
+                data = Card(
+                    created_at=transaction['created_at'],
+                    currency=transaction['currency'],
+                    amount=transaction['amount'],
+                    description=transaction['description'],
+                    cardholder_name=transaction['cardholder_name'],
+                    cardholder_surname=transaction['cardholder_surname'],
+                    card_number=transaction['card_number']
+                )
+                result.append(create_payment_info(card_payment_info, data))
 
     return result
 
