@@ -2,10 +2,10 @@ from dataclasses import dataclass
 import iso8601
 import pytz
 import requests
+from pydantic import BaseModel
 
 
-@dataclass
-class PaymentInfo:
+class PaymentInfo(BaseModel):
     date: str = 'unprocessed'
     type: str = 'unprocessed'
     amount: int = 0
@@ -131,4 +131,4 @@ def calculate_amount_in_pln(amount_of_transaction, exchange_rate_of_transaction)
 
 
 def prepare_nbp_date(datetime_to_parse):
-    return
+    return datetime_to_parse.strftime('%Y-%m-%d')
