@@ -6,7 +6,7 @@ from assertpy import assert_that
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
     card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date, \
     mask_card_nr, get_nbp_exchange_rate, calculate_amount_in_pln, prepare_nbp_date, PayByLink, DirectPayment, Card, \
-    PaymentInfo, process_request
+    PaymentInfo, process_request, InvalidDateString
 
 
 @pytest.mark.django_db
@@ -327,6 +327,12 @@ class TestTransactionsServices:
         # then
         assert_that(result).is_equal_to(expected)
 
+    def test_get_valid_utc_string_error_handling(self):
+        wrong_date_string = 'XX21-05-14T18:32:26Z'
+        # when
+        with pytest.raises(InvalidDateString):
+            get_valid_utc_iso8061_date(wrong_date_string)
+
     @pytest.fixture(autouse=True)
     def prepare_mask_card_nr(self):
         self.mask_card_nr = mask_card_nr
@@ -388,4 +394,3 @@ class TestTransactionsServices:
         # then
         expected = '2021-05-14'
         assert_that(result).is_equal_to(expected)
-
