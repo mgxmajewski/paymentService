@@ -162,6 +162,18 @@ class TestTransactionsServices:
         expected = '2021-05-13T09:01:43Z'
         assert_that(result).is_equal_to(expected)
 
+    def test_process_transaction_amount_in_pln(self):
+        # given
+        processing_strategy = pay_by_link_payment_info
+        data = self.PayByLinkStub
+
+        # when
+        result = self.create_payment_info(processing_strategy, data).amount_in_pln
+
+        # then
+        expected = 13494
+        assert_that(result).is_equal_to(expected)
+
     @pytest.fixture(autouse=True)
     def prepare_iso8601_date_parser(self):
         self.iso8601_date_parser = iso8601_date_parser
