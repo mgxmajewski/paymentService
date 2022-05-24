@@ -6,7 +6,7 @@ from assertpy import assert_that
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
     card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date, \
     mask_card_nr, get_nbp_exchange_rate, calculate_amount_in_pln, prepare_nbp_date, PayByLink, DirectPayment, Card, \
-    PaymentInfo
+    PaymentInfo, process_request
 
 
 @pytest.mark.django_db
@@ -54,6 +54,12 @@ class TestTransactionsServices:
     }
 
     PaymentInfoStub = PaymentInfo(**payment_info_stub_data)
+
+    RequestStub = {
+        'pay_by_link_payment': [
+            pay_by_link_stub_data
+        ]
+    }
 
     @pytest.fixture(autouse=True)
     def prepare_get_payment_info(self):
@@ -197,6 +203,20 @@ class TestTransactionsServices:
 
         # then
         expected = self.PaymentInfoStub
+        assert_that(result).is_equal_to(expected)
+
+    @pytest.fixture(autouse=True)
+    def prepare_test_process_request(self):
+        self.process_request = process_request
+
+    def test_process_request(self):
+        # given
+        request = self.RequestStub
+        # when
+        result = self.process_request(request)
+
+        # then
+        expected = [self.PaymentInfoStub]
         assert_that(result).is_equal_to(expected)
 
     @pytest.fixture(autouse=True)

@@ -41,6 +41,10 @@ class PaymentInfo(BaseModel):
     amount_in_pln: int
 
 
+def process_request(request):
+    return
+
+
 def pay_by_link_payment_info(data):
     # handle the date
     temp_datetime = get_valid_utc_iso8061_date(data.created_at)
