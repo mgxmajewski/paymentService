@@ -96,19 +96,29 @@ def dp_payment_info(data):
 
 
 def card_payment_info(data):
+    # handle the date
     temp_datetime = get_valid_utc_iso8061_date(data.created_at)
     normalized_date_string = get_date_normalized_str(temp_datetime)
+
+    # direct mapping
     amount = data.amount
     currency = data.currency
     description = data.description
-    payment_mean = get_payment_mean_card_str(data)
-    new_payment_info = PaymentInfo(type='card',
-                                   date=normalized_date_string,
-                                   amount=amount,
-                                   currency=currency,
-                                   description=description,
-                                   payment_mean=payment_mean)
-    return new_payment_info
+
+    # conversion to PLN handler
+    calculated_amount_in_pln = conversion_handler(temp_datetime, amount, currency)
+
+    # strategy specific mapping
+    payment_mean_masked_card_details = get_payment_mean_card_str(data)
+
+    result = PaymentInfo(type='card',
+                         date=normalized_date_string,
+                         amount=amount,
+                         currency=currency,
+                         description=description,
+                         payment_mean=payment_mean_masked_card_details,
+                         amount_in_pln=calculated_amount_in_pln)
+    return result
 
 
 def create_payment_info(processing_strategy_fn, data):
@@ -169,3 +179,14 @@ def calculate_amount_in_pln(amount_of_transaction, exchange_rate_of_transaction)
 
 def prepare_nbp_date(datetime_to_parse):
     return datetime_to_parse.strftime('%Y-%m-%d')
+
+
+def conversion_handler(date, amount, currency):
+    if currency is 'PLN':
+        calculated_amount_in_pln = amount
+    else:
+        temp_datetime_nbp = prepare_nbp_date(date)
+        temp_exchange_rate = get_nbp_exchange_rate(temp_datetime_nbp, currency)
+        calculated_amount_in_pln = calculate_amount_in_pln(amount, temp_exchange_rate)
+
+    return calculated_amount_in_pln
