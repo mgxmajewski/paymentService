@@ -150,6 +150,18 @@ class TestTransactionsServices:
         # then
         assert_that(result).is_equal_to("FastFood")
 
+    def test_date_processing(self):
+        # given
+        processing_strategy = pay_by_link_payment_info
+        data = self.PayByLinkStub
+
+        # when
+        result = self.create_payment_info(processing_strategy, data).date
+
+        # then
+        expected = '2021-05-13T09:01:43Z'
+        assert_that(result).is_equal_to(expected)
+
     @pytest.fixture(autouse=True)
     def prepare_iso8601_date_parser(self):
         self.iso8601_date_parser = iso8601_date_parser
@@ -289,3 +301,11 @@ class TestTransactionsServices:
         # then
         expected = '2021-05-14'
         assert_that(result).is_equal_to(expected)
+
+    # @pytest.fixture(autouse=True)
+    # def prepare_mask_card_nr(self):
+    #     self.parse_crated_at_date = parse_crated_at_date
+
+
+
+
