@@ -12,25 +12,25 @@ from transactions.services import create_payment_info, pay_by_link_payment_info,
 @pytest.mark.django_db
 class TestTransactionsServices:
     # Transactions stubs
-    pay_by_link_stub_data = {
+    pay_by_link_transaction_stub_data = {
         'created_at': '2021-05-13T01:01:43-08:00',
         'currency': 'EUR',
         'amount': 3000,
         'description': 'Gym membership',
         'bank': 'mbank'
     }
-    PayByLinkStub = PayByLink(**pay_by_link_stub_data)
+    PayByLinkTransactionStub = PayByLink(**pay_by_link_transaction_stub_data)
 
-    dp_stub_data = {
+    dp_transaction_stub_data = {
         'created_at': '2021-05-14T08:27:09Z',
         'currency': 'USD',
         'amount': 599,
         'description': 'FastFood',
         'iban': 'DE91100000000123456789',
     }
-    DirectPaymentStub = DirectPayment(**dp_stub_data)
+    DirectPaymentTransactionStub = DirectPayment(**dp_transaction_stub_data)
 
-    card_stub_data = {
+    card_transaction_stub_data = {
         'created_at': '2021-05-13T09:00:05+02:00',
         'currency': 'PLN',
         'amount': 2450,
@@ -39,7 +39,7 @@ class TestTransactionsServices:
         'cardholder_surname': 'Doe',
         'card_number': '1234222222226789'
     }
-    CardStub = Card(**card_stub_data)
+    CardTransactionStub = Card(**card_transaction_stub_data)
 
     # Transactions stubs
     pay_by_link_payment_info_stub_data = {
@@ -67,16 +67,16 @@ class TestTransactionsServices:
     # Requests stubs
     RequestStub_1 = {
         'pay_by_link_payment': [
-            pay_by_link_stub_data
+            pay_by_link_transaction_stub_data
         ],
     }
 
     RequestStub_2 = {
         'pay_by_link_payment': [
-            pay_by_link_stub_data
+            pay_by_link_transaction_stub_data
         ],
         'card': [
-            card_stub_data
+            card_transaction_stub_data
         ]
     }
 
@@ -85,19 +85,19 @@ class TestTransactionsServices:
         self.create_payment_info = create_payment_info
 
     # case1
-    data_1 = PayByLinkStub
+    data_1 = PayByLinkTransactionStub
     processing_strategy_1 = pay_by_link_payment_info
     expected_1 = 'pay_by_link'
     case_1 = processing_strategy_1, data_1, expected_1
 
     # case2
-    data_2 = DirectPaymentStub
+    data_2 = DirectPaymentTransactionStub
     processing_strategy_2 = dp_payment_info
     expected_2 = 'dp'
     case_2 = processing_strategy_2, data_2, expected_2
 
     # case3
-    data_3 = CardStub
+    data_3 = CardTransactionStub
     processing_strategy_3 = card_payment_info
     expected_3 = 'card'
     case_3 = processing_strategy_3, data_3, expected_3
@@ -116,19 +116,19 @@ class TestTransactionsServices:
 
     # case1
     processing_strategy_1 = pay_by_link_payment_info
-    data_1 = PayByLinkStub
+    data_1 = PayByLinkTransactionStub
     expected_1 = 'mbank'
     case_1 = processing_strategy_1, data_1, expected_1
 
     # case2
     processing_strategy_2 = dp_payment_info
-    data_2 = DirectPaymentStub
+    data_2 = DirectPaymentTransactionStub
     expected_2 = 'DE91100000000123456789'
     case_2 = processing_strategy_2, data_2, expected_2
 
     # case3
     processing_strategy_3 = card_payment_info
-    data_3 = CardStub
+    data_3 = CardTransactionStub
     expected_3 = 'John Doe 1234********6789'
     case_3 = processing_strategy_3, data_3, expected_3
 
@@ -150,7 +150,7 @@ class TestTransactionsServices:
         """
 
         processing_strategy = dp_payment_info
-        data = self.DirectPaymentStub
+        data = self.DirectPaymentTransactionStub
 
         # when
         result = self.create_payment_info(processing_strategy, data).amount
@@ -165,7 +165,7 @@ class TestTransactionsServices:
 
         # given
         processing_strategy = dp_payment_info
-        data = self.DirectPaymentStub
+        data = self.DirectPaymentTransactionStub
 
         # when
         result = self.create_payment_info(processing_strategy, data).currency
@@ -180,7 +180,7 @@ class TestTransactionsServices:
 
         # given
         processing_strategy = dp_payment_info
-        data = self.DirectPaymentStub
+        data = self.DirectPaymentTransactionStub
 
         # when
         result = self.create_payment_info(processing_strategy, data).description
@@ -191,7 +191,7 @@ class TestTransactionsServices:
     def test_process_transaction_date(self):
         # given
         processing_strategy = pay_by_link_payment_info
-        data = self.PayByLinkStub
+        data = self.PayByLinkTransactionStub
 
         # when
         result = self.create_payment_info(processing_strategy, data).date
@@ -203,7 +203,7 @@ class TestTransactionsServices:
     def test_process_transaction_amount_in_pln(self):
         # given
         processing_strategy = pay_by_link_payment_info
-        data = self.PayByLinkStub
+        data = self.PayByLinkTransactionStub
 
         # when
         result = self.create_payment_info(processing_strategy, data).amount_in_pln
@@ -215,7 +215,7 @@ class TestTransactionsServices:
     def test_full_process_for_card_payment(self):
         # given
         processing_strategy = card_payment_info
-        data = self.CardStub
+        data = self.CardTransactionStub
 
         # when
         result = self.create_payment_info(processing_strategy, data)
