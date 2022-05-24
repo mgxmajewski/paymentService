@@ -42,7 +42,26 @@ class PaymentInfo(BaseModel):
 
 
 def process_request(request):
-    return
+    result = []
+    for key in request:
+        if key is 'pay_by_link_payment':
+            for transaction in request['pay_by_link_payment']:
+                # print(f'transaction {transaction}')
+                data = PayByLink(
+                    created_at=transaction['created_at'],
+                    currency=transaction['currency'],
+                    amount=transaction['amount'],
+                    description=transaction['description'],
+                    bank=transaction['bank']
+                )
+                result.append(create_payment_info(pay_by_link_payment_info, data))
+
+    return result
+
+
+def create_payment_info(processing_strategy_fn, data):
+    payment_info = processing_strategy_fn(data)
+    return payment_info
 
 
 def pay_by_link_payment_info(data):
@@ -121,11 +140,6 @@ def card_payment_info(data):
                          payment_mean=masked_card_details,
                          amount_in_pln=calculated_amount_in_pln)
     return result
-
-
-def create_payment_info(processing_strategy_fn, data):
-    payment_info = processing_strategy_fn(data)
-    return payment_info
 
 
 def get_payment_mean_card_str(data_source):
