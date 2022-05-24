@@ -5,7 +5,7 @@ from assertpy import assert_that
 
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
     card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date, \
-    mask_card_nr, get_nbp_exchange_rate
+    mask_card_nr, get_nbp_exchange_rate, calculate_amount_in_pln
 
 
 @pytest.mark.django_db
@@ -229,3 +229,18 @@ class TestTransactionsServices:
         expected = 3.7055
         assert_that(result).is_equal_to(expected)
 
+    @pytest.fixture(autouse=True)
+    def prepare_mask_card_nr(self):
+        self.calculate_amount_in_pln = calculate_amount_in_pln
+
+    def test_calculate_amount_in_pln(self):
+        # given
+        amount_of_transaction = 599
+        exchange_rate_of_transaction = 3.7055
+
+        # when
+        result = calculate_amount_in_pln(amount_of_transaction, exchange_rate_of_transaction)
+
+        # then
+        expected = 2219
+        assert_that(result).is_equal_to(expected)

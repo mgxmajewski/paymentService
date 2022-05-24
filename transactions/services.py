@@ -122,6 +122,5 @@ def get_nbp_exchange_rate(date_of_transaction, currency_of_transaction):
     exchange_rate = float(exchange_rate_str)
     return exchange_rate
 
-# base fetch url
-# http://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-04/?format=json
-# ask is the value to use for calculation ("selling price")
+def calculate_amount_in_pln(amount_of_transaction, exchange_name_of_transaction):
+    return
