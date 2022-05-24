@@ -32,19 +32,19 @@ class Card(BaseModel):
 
 
 class PaymentInfo(BaseModel):
-    date: str = 'unprocessed'
+    date: str
     type: str
     amount: int
     description: str
     currency: str
     payment_mean: str
-    amount_in_pln: int = 0
+    amount_in_pln: int
 
 
 def pay_by_link_payment_info(data):
     # handle the date
     temp_datetime = get_valid_utc_iso8061_date(data.created_at)
-    normalized_date_string = get_date_normalized_str(temp_datetime)
+    utc_str = get_date_normalized_str(temp_datetime)
 
     # direct mapping
     amount = data.amount
@@ -58,7 +58,7 @@ def pay_by_link_payment_info(data):
     bank = data.bank
 
     new_payment_info = PaymentInfo(type='pay_by_link',
-                                   date=normalized_date_string,
+                                   date=utc_str,
                                    amount=amount,
                                    currency=currency,
                                    description=description,
@@ -70,7 +70,7 @@ def pay_by_link_payment_info(data):
 def dp_payment_info(data):
     # handle the date
     temp_datetime = get_valid_utc_iso8061_date(data.created_at)
-    normalized_date_string = get_date_normalized_str(temp_datetime)
+    utc_str = get_date_normalized_str(temp_datetime)
 
     # direct mapping
     amount = data.amount
@@ -84,7 +84,7 @@ def dp_payment_info(data):
     iban = data.iban
 
     new_payment_info = PaymentInfo(type='dp',
-                                   date=normalized_date_string,
+                                   date=utc_str,
                                    amount=amount,
                                    currency=currency,
                                    description=description,
@@ -96,7 +96,7 @@ def dp_payment_info(data):
 def card_payment_info(data):
     # handle the date
     temp_datetime = get_valid_utc_iso8061_date(data.created_at)
-    normalized_date_string = get_date_normalized_str(temp_datetime)
+    utc_str = get_date_normalized_str(temp_datetime)
 
     # direct mapping
     amount = data.amount
@@ -110,7 +110,7 @@ def card_payment_info(data):
     masked_card_details = get_payment_mean_card_str(data)
 
     result = PaymentInfo(type='card',
-                         date=normalized_date_string,
+                         date=utc_str,
                          amount=amount,
                          currency=currency,
                          description=description,
