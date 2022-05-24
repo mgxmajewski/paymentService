@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from .services import process_request
 
 
 # Create your views here.
@@ -11,4 +12,5 @@ def get_server_check(request):
 
 @api_view(['POST'])
 def generate_report(request):
-    return Response(request.data)
+    report = process_request(request.data)
+    return Response({'report': report}, content_type='application/json')
