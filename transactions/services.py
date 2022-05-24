@@ -55,9 +55,8 @@ def get_payment_mean_card_str(data_source):
 
 
 def pay_by_link_payment_info(data):
-    new_payment_info = PaymentInfo()
-    new_payment_info.type = 'pay_by_link'
-    new_payment_info.payment_mean = data.bank
+    payment_mean = data.bank
+    new_payment_info = PaymentInfo(type='pay_by_link', payment_mean=payment_mean)
     return new_payment_info
 
 
