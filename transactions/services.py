@@ -34,10 +34,10 @@ class Card(BaseModel):
 class PaymentInfo(BaseModel):
     date: str
     type: str
-    amount: int
+    payment_mean: str
     description: str
     currency: str
-    payment_mean: str
+    amount: int
     amount_in_pln: int
 
 
