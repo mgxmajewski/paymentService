@@ -236,7 +236,8 @@ class TestTransactionsServices:
 
     # case1
     request_2 = RequestStub_2
-    expected_2 = [PayByLinkInfoStub.dict(), CardPaymentInfoStub.dict()]
+    # take in consideration the correct order
+    expected_2 = [CardPaymentInfoStub.dict(), PayByLinkInfoStub.dict()]
     case_2 = request_2, expected_2
 
     # # case3
@@ -394,6 +395,3 @@ class TestTransactionsServices:
         expected = '2021-05-14'
         assert_that(result).is_equal_to(expected)
 
-    # @pytest.fixture(autouse=True)
-    # def prepare_mask_card_nr(self):
-    #     self.parse_crated_at_date = parse_crated_at_date
