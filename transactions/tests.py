@@ -1,9 +1,10 @@
-# from django.test import TestCase
+import json
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-# Create your tests here.
+
+# Request via API specific tests.
 
 
 class ReportTests(APITestCase):
@@ -60,19 +61,19 @@ class ReportTests(APITestCase):
         ]
     }
 
-    Expected_Response_Short = [
+    ExpectedResponseShort = [
         {
-            'date': '2021-05-13T07:00:05Z',
-            'type': 'card',
-            'payment_mean': 'John Doe 2222********2222',
-            'description': 'REF123457',
-            'currency': 'PLN',
-            'amount': 2450,
-            'amount_in_pln': 2450
+            'date': '2021-05-13T09:01:43Z',
+            'type': 'pay_by_link',
+            'payment_mean': 'mbank',
+            'description': 'Gym membership',
+            'currency': 'EUR',
+            'amount': 3000,
+            'amount_in_pln': 13494
         }
     ]
 
-    Expected_Response = [
+    ExpectedResponse = [
         {
             'date': '2021-05-13T07:00:05Z',
             'type': 'card',
@@ -97,11 +98,11 @@ class ReportTests(APITestCase):
             'payment_mean': 'DE91100000000123456789',
             'description': 'FastFood',
             'currency': 'USD',
-            'amount': '599',
-            'amount_in_pln': '2219'
+            'amount': 599,
+            'amount_in_pln': 2219
         },
         {
-            'date': '2021-05-14T18:32:26Z ',
+            'date': '2021-05-14T18:32:26Z',
             'type': 'card',
             'payment_mean': 'John Doe 1111********1111',
             'description': 'REF123456',
@@ -126,18 +127,37 @@ class ReportTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['message'], 'Server is ready for work.')
 
-    def test_empty_json_report(self):
+    def test_short_json_report(self):
         """
-        Check if report/ returns empty JSON on empty JSON request.
+        Check if report/ returns correct JSON.
         """
 
         # given
         url = reverse('report')
 
         # when
-        data = self.RequestStubShort
-        response = self.client.post(url, data, content_type='application/json')
+        data = json.dumps(self.RequestStubShort)
+        result = self.client.post(url, data, content_type='application/json').data
 
         # then
+        print(result)
+        expected = self.ExpectedResponseShort
         # self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, self.Expected_Response_Short)
+        self.assertEqual(result, self.ExpectedResponseShort)
+
+    def test_long_json_report(self):
+        """
+        Check if report/ returns correct JSON.
+        """
+
+        # given
+        url = reverse('report')
+
+        # when
+        data = json.dumps(self.RequestStub)
+        result = self.client.post(url, data, content_type='application/json').data
+
+        # then
+        expected = self.ExpectedResponseShort
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(result, self.ExpectedResponse)
