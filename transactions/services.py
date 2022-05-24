@@ -5,6 +5,32 @@ import requests
 from pydantic import BaseModel
 
 
+class PayByLink(BaseModel):
+    created_at: str
+    currency: str
+    amount: int
+    description: str
+    bank: str
+
+
+class DirectPayment(BaseModel):
+    created_at: str
+    currency: str
+    amount: int
+    description: str
+    iban: str
+
+
+class Card(BaseModel):
+    created_at: str
+    currency: str
+    amount: int
+    description: str
+    cardholder_name: str
+    cardholder_surname: str
+    card_number: str
+
+
 class PaymentInfo(BaseModel):
     date: str = 'unprocessed'
     type: str = 'unprocessed'
