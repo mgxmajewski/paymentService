@@ -43,7 +43,19 @@ class TestTransactionsServices:
 
     CardStub = Card(**card_stub_data)
 
-    payment_info_stub_data = {
+    pay_by_link_payment_info_stub_data = {
+        'date': '2021-05-13T09:01:43Z',
+        'type': 'pay_by_link',
+        'payment_mean': 'mbank',
+        'description': 'Gym membership',
+        'currency': 'EUR',
+        'amount': 3000,
+        'amount_in_pln': 13494
+    }
+
+    PayByLinkInfoStub = PaymentInfo(**pay_by_link_payment_info_stub_data)
+
+    card_payment_info_stub_data = {
         'date': '2021-05-13T07:00:05Z',
         'type': 'card',
         'payment_mean': 'John Doe 1234********6789',
@@ -53,7 +65,7 @@ class TestTransactionsServices:
         'amount_in_pln': 2450
     }
 
-    PaymentInfoStub = PaymentInfo(**payment_info_stub_data)
+    CardPaymentInfoStub = PaymentInfo(**card_payment_info_stub_data)
 
     RequestStub = {
         'pay_by_link_payment': [
@@ -202,7 +214,7 @@ class TestTransactionsServices:
         result = self.create_payment_info(processing_strategy, data)
 
         # then
-        expected = self.PaymentInfoStub
+        expected = self.CardPaymentInfoStub
         assert_that(result).is_equal_to(expected)
 
     @pytest.fixture(autouse=True)
@@ -216,7 +228,7 @@ class TestTransactionsServices:
         result = self.process_request(request)
 
         # then
-        expected = [self.PaymentInfoStub]
+        expected = [self.PayByLinkInfoStub]
         assert_that(result).is_equal_to(expected)
 
     @pytest.fixture(autouse=True)
