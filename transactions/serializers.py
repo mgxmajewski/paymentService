@@ -1,12 +1,11 @@
-from abc import ABC
-
 from rest_framework import serializers
-# from .models import PayByLink
 
-#
-# class PayByLinkSerializer(serializers.Serializer):
-#     date = serializers.CharField(max_length=30, source='crated_at')
-#     currency = serializers.CharField(max_length=3)
-#     amount = serializers.IntegerField()
-#     description = serializers.CharField(max_length=20)
-#     bank = serializers.CharField(max_length=10)
+
+class PaymentInfoSerializer(serializers.Serializer):
+    date: serializers.CharField(max_length=30)
+    type: serializers.CharField(max_length=30)
+    amount: serializers.IntegerField()
+    description: serializers.CharField(max_length=30)
+    currency: serializers.CharField(max_length=30)
+    payment_mean: serializers.CharField(max_length=30)
+    amount_in_pln: serializers.IntegerField()
