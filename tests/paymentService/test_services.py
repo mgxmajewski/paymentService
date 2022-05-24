@@ -5,7 +5,7 @@ from assertpy import assert_that
 
 from transactions.services import create_payment_info, pay_by_link_payment_info, dp_payment_info, \
     card_payment_info, iso8601_date_parser, convert_date_to_utc, get_date_normalized_str, get_valid_utc_iso8061_date, \
-    mask_card_nr, get_exchange_rate
+    mask_card_nr, get_nbp_exchange_rate
 
 
 @pytest.mark.django_db
@@ -215,7 +215,7 @@ class TestTransactionsServices:
 
     @pytest.fixture(autouse=True)
     def prepare_mask_card_nr(self):
-        self.get_exchange_rate = get_exchange_rate
+        self.get_nbp_exchange_rate = get_nbp_exchange_rate
 
     def test_get_exchange_rate(self):
         # given
@@ -223,7 +223,7 @@ class TestTransactionsServices:
         currency_of_transaction = 'USD'
 
         # when
-        result = get_exchange_rate(date_of_transaction, currency_of_transaction)
+        result = get_nbp_exchange_rate(date_of_transaction, currency_of_transaction)
 
         # then
         expected = 3.7055
