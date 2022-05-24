@@ -38,6 +38,7 @@ class PaymentInfo(BaseModel):
     description: str
     currency: str
     payment_mean: str
+    amount_in_pln: int = 0
 
 
 def map_direct_fields(data_source, data_receiver):
@@ -55,18 +56,25 @@ def get_payment_mean_card_str(data_source):
 
 
 def pay_by_link_payment_info(data):
-    temp_datetime = get_valid_utc_iso8061_date(data.created_at)
-    normalized_date_string = get_date_normalized_str(temp_datetime)
     amount = data.amount
     currency = data.currency
     description = data.description
     payment_mean = data.bank
+    # handle the date
+    temp_datetime = get_valid_utc_iso8061_date(data.created_at)
+    normalized_date_string = get_date_normalized_str(temp_datetime)
+    # handle the conversion to PLN
+    temp_datetime_nbp = prepare_nbp_date(temp_datetime)
+    temp_exchange_rate = get_nbp_exchange_rate(temp_datetime_nbp, currency)
+    amount_in_pln = calculate_amount_in_pln(amount, temp_exchange_rate)
+
     new_payment_info = PaymentInfo(type='pay_by_link',
                                    date=normalized_date_string,
                                    amount=amount,
                                    currency=currency,
                                    description=description,
-                                   payment_mean=payment_mean)
+                                   payment_mean=payment_mean,
+                                   amount_in_pln=amount_in_pln)
     return new_payment_info
 
 
@@ -77,6 +85,7 @@ def dp_payment_info(data):
     currency = data.currency
     description = data.description
     payment_mean = data.iban
+    normalized_date_string = get_date_normalized_str(temp_datetime)
     new_payment_info = PaymentInfo(type='dp',
                                    date=normalized_date_string,
                                    amount=amount,
