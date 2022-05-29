@@ -24,9 +24,10 @@ def generate_report(request):
 
 @api_view(['POST'])
 # @renderer_classes([JSONRenderer])
-def save_report(request):
+def save_report(request, pk):
     try:
         report = process_request(request.data)
+        print(pk)
     except InvalidDateString:
         return Response('Bad request: "created_at" string(date-field) not valid.', status=status.HTTP_400_BAD_REQUEST)
     return Response(report, content_type='application/json')
